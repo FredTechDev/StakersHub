@@ -1,0 +1,1288 @@
+<!--Add apis for matches referencing and logos specifications-->
+<!--Add data analytics functionality for match outcome predictions-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+         const matches = [
+            {
+                id: 1,
+                league: "Premier League",
+                leagueIcon: "fa-futbol",
+                date: "Today, 19:30 EAT",
+                team1: "Manchester City",
+                team2: "Arsenal",
+                team1Icon: "fa-shield",
+                team2Icon: "fa-gun",
+                stakes: [
+                    { type: "1", odds: 1.85 },
+                    { type: "X", odds: 3.60 },
+                    { type: "2", odds: 4.20 }
+                ]
+            },
+            {
+                id: 2,
+                league: "UEFA Champions League",
+                leagueIcon: "fa-trophy",
+                date: "Today, 22:00 EAT",
+                team1: "Real Madrid",
+                team2: "Bayern Munich",
+                team1Icon: "fa-crown",
+                team2Icon: "fa-beer",
+                stakes: [
+                    { type: "1", odds: 2.10 },
+                    { type: "X", odds: 3.40 },
+                    { type: "2", odds: 3.30 }
+                ]
+            },
+            {
+                id: 3,
+                league: "Kenyan Premier League",
+                leagueIcon: "fa-flag",
+                date: "Today, 16:00 EAT",
+                team1: "Gor Mahia",
+                team2: "AFC Leopards",
+                team1Icon: "fa-lion",
+                team2Icon: "fa-paw",
+                stakes: [
+                    { type: "1", odds: 1.90 },
+                    { type: "X", odds: 2.80 },
+                    { type: "2", odds: 4.10 }
+                ]
+            },
+            {
+                id: 4,
+                league: "La Liga",
+                leagueIcon: "fa-futbol",
+                date: "Today, 21:00 EAT",
+                team1: "Barcelona",
+                team2: "Atletico Madrid",
+                team1Icon: "fa-b",
+                team2Icon: "fa-at",
+                stakes: [
+                    { type: "1", odds: 2.05 },
+                    { type: "X", odds: 3.30 },
+                    { type: "2", odds: 3.70 }
+                ]
+            }
+        ];
+
+        const kenyanMatches = {
+            fpl: [
+                {
+                    id: 5,
+                    league: "Kenyan FPL",
+                    leagueIcon: "fa-flag",
+                    date: "Today, 15:00 EAT",
+                    team1: "Tusker FC",
+                    team2: "KCB FC",
+                    team1Icon: "fa-beer",
+                    team2Icon: "fa-bank",
+                    stakes: [
+                        { type: "1", odds: 2.30 },
+                        { type: "X", odds: 2.90 },
+                        { type: "2", odds: 3.10 }
+                    ]
+                },
+                {
+                    id: 6,
+                    league: "Kenyan FPL",
+                    leagueIcon: "fa-flag",
+                    date: "Today, 15:00 EAT",
+                    team1: "Ulinzi Stars",
+                    team2: "Bandari FC",
+                    team1Icon: "fa-star",
+                    team2Icon: "fa-ship",
+                    stakes: [
+                        { type: "1", odds: 2.40 },
+                        { type: "X", odds: 2.80 },
+                        { type: "2", odds: 2.90 }
+                    ]
+                }
+            ],
+            nsl: [
+                {
+                    id: 7,
+                    league: "NSL",
+                    leagueIcon: "fa-futbol",
+                    date: "Today, 14:00 EAT",
+                    team1: "MCF",
+                    team2: "Fortune Sacco",
+                    team1Icon: "fa-f",
+                    team2Icon: "fa-s",
+                    stakes: [
+                        { type: "1", odds: 2.60 },
+                        { type: "X", odds: 2.70 },
+                        { type: "2", odds: 2.80 }
+                    ]
+                }
+            ],
+            division1: [
+                {
+                    id: 8,
+                    league: "Division One",
+                    leagueIcon: "fa-futbol",
+                    date: "Today, 13:00 EAT",
+                    team1: "Kisumu All Stars",
+                    team2: "Mombasa Elite",
+                    team1Icon: "fa-star",
+                    team2Icon: "fa-anchor",
+                    stakes: [
+                        { type: "1", odds: 2.20 },
+                        { type: "X", odds: 2.90 },
+                        { type: "2", odds: 3.30 }
+                    ]
+                }
+            ]
+        };
+
+        // Bet Slip Data
+        let betSlip = [];
+        let totalOdds = 1.00;
+
+        // DOM Elements
+        const matchesContainer = document.getElementById('matchesContainer');
+        const betSlipElement = document.getElementById('betSlip');
+        const betSlipHeader = document.getElementById('betSlipHeader');
+        const betSlipContent = document.getElementById('betSlipContent');
+        const betCountElement = document.getElementById('betCount');
+        const totalOddsElement = document.getElementById('totalOdds');
+        const placeBetBtn = document.getElementById('placeBetBtn');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainNav = document.getElementById('mainNav');
+        const leagueTabs = document.querySelectorAll('.league-tab');
+        const leagueContents = document.querySelectorAll('.league-content');
+
+        // Initialize the page
+        function init() {
+            renderMatches();
+            setupEventListeners();
+            setupLeagueTabs();
+        }
+
+        // Render matches to the page
+        function renderMatches() {
+            matchesContainer.innerHTML = '';
+            
+            matches.forEach(match => {
+                const matchCard = createMatchCard(match);
+                matchesContainer.appendChild(matchCard);
+            });
+            
+            // Render Kenyan FPL matches by default
+            renderKenyanMatches('fpl');
+        }
+
+        // Render Kenyan matches based on selected league
+        function renderKenyanMatches(league) {
+            const container = document.getElementById(league).querySelector('.matches-container');
+            container.innerHTML = '';
+            
+            kenyanMatches[league].forEach(match => {
+                const matchCard = createMatchCard(match);
+                container.appendChild(matchCard);
+            });
+        }
+
+        // Create a match card element
+        function createMatchCard(match) {
+            const matchCard = document.createElement('div');
+            matchCard.className = 'match-card';
+            matchCard.dataset.id = match.id;
+            
+            matchCard.innerHTML = `
+                <div class="match-header">
+                    <div class="match-league">
+                        <i class="fas ${match.leagueIcon}"></i>
+                        <span>${match.league}</span>
+                    </div>
+                    <div class="match-date">${match.date}</div>
+                </div>
+                
+                <div class="match-teams">
+                    <div class="team">
+                        <div class="team-logo">
+                            <i class="fas ${match.team1Icon}"></i>
+                        </div>
+                        <div class="team-name">${match.team1}</div>
+                    </div>
+                    
+                    <div class="vs">VS</div>
+                    
+                    <div class="team">
+                        <div class="team-logo">
+                            <i class="fas ${match.team2Icon}"></i>
+                        </div>
+                        <div class="team-name">${match.team2}</div>
+                    </div>
+                </div>
+                
+                <div class="match-stakes">
+                    ${match.stakes.map(stake => `
+                        <div class="stake-option" data-match-id="${match.id}" data-type="${stake.type}" data-odds="${stake.odds}">
+                            <div class="stake-odds">${stake.odds.toFixed(2)}</div>
+                            <div class="stake-type">${stake.type === '1' ? match.team1 : stake.type === '2' ? match.team2 : 'Draw'}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            return matchCard;
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', () => {
+                mainNav.classList.toggle('active');
+                mobileMenuBtn.innerHTML = mainNav.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+
+            // Bet slip toggle
+            betSlipHeader.addEventListener('click', () => {
+                betSlipElement.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('#mainNav a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mainNav.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                });
+            });
+
+            // Place bet button
+            placeBetBtn.addEventListener('click', placeBet);
+
+            // Add stake to bet slip when clicking on a stake option
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.stake-option')) {
+                    const stakeOption = e.target.closest('.stake-option');
+                    const matchId = parseInt(stakeOption.dataset.matchId);
+                    const stakeType = stakeOption.dataset.type;
+                    const odds = parseFloat(stakeOption.dataset.odds);
+                    
+                    addToBetSlip(matchId, stakeType, odds, stakeOption);
+                }
+            });
+        }
+
+        // Set up league tabs
+        function setupLeagueTabs() {
+            leagueTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    leagueTabs.forEach(t => t.classList.remove('active'));
+                    leagueContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const league = tab.dataset.league;
+                    document.getElementById(league).classList.add('active');
+                    
+                    // Render matches for the selected league
+                    renderKenyanMatches(league);
+                });
+            });
+        }
+
+        // Add stake to bet slip
+        function addToBetSlip(matchId, stakeType, odds, stakeElement) {
+            // Find the match
+            let match;
+            const allMatches = [...matches, ...kenyanMatches.fpl, ...kenyanMatches.nsl, ...kenyanMatches.division1];
+            match = allMatches.find(m => m.id === matchId);
+            
+            // Check if this match is already in the bet slip
+            const existingBetIndex = betSlip.findIndex(bet => bet.matchId === matchId);
+            
+            if (existingBetIndex !== -1) {
+                // Replace the existing bet for this match
+                betSlip[existingBetIndex] = {
+                    matchId,
+                    stakeType,
+                    odds,
+                    match
+                };
+            } else {
+                // Add new bet to the slip
+                betSlip.push({
+                    matchId,
+                    stakeType,
+                    odds,
+                    match
+                });
+            }
+            
+            // Update the UI
+            updateBetSlipUI();
+            
+            // Show animation on the stake element
+            stakeElement.classList.add('stake-added');
+            setTimeout(() => {
+                stakeElement.classList.remove('stake-added');
+            }, 500);
+            
+            // Show notification
+            showNotification(`Stake added to bet slip!`);
+            
+            // Open the bet slip
+            betSlipElement.classList.add('active');
+        }
+
+        // Update bet slip UI
+        function updateBetSlipUI() {
+            // Update bet count
+            betCountElement.textContent = betSlip.length;
+            
+            // Update total odds
+            totalOdds = betSlip.reduce((total, bet) => total * bet.odds, 1);
+            totalOddsElement.textContent = totalOdds.toFixed(2);
+            
+            // Update bet slip content
+            if (betSlip.length === 0) {
+                document.getElementById('emptyBetSlip').style.display = 'block';
+                betSlipContent.innerHTML = '<p id="emptyBetSlip" style="text-align: center; color: #999; padding: 20px;">Your bet slip is empty. Add stakes from matches above.</p>';
+            } else {
+                document.getElementById('emptyBetSlip')?.remove();
+                
+                let betSlipHTML = '';
+                betSlip.forEach((bet, index) => {
+                    const stakeTypeText = bet.stakeType === '1' ? bet.match.team1 : bet.stakeType === '2' ? bet.match.team2 : 'Draw';
+                    
+                    betSlipHTML += `
+                        <div class="bet-item">
+                            <div>
+                                <div class="bet-match">${bet.match.team1} vs ${bet.match.team2}</div>
+                                <div class="bet-selection">${stakeTypeText} @ ${bet.odds.toFixed(2)}</div>
+                            </div>
+                            <button class="remove-bet" data-index="${index}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                betSlipContent.innerHTML = betSlipHTML;
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-bet').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.currentTarget.dataset.index);
+                        removeFromBetSlip(index);
+                    });
+                });
+            }
+        }
+
+        // Remove bet from bet slip
+        function removeFromBetSlip(index) {
+            betSlip.splice(index, 1);
+            updateBetSlipUI();
+            showNotification('Stake removed from bet slip');
+        }
+
+        // Place bet (simulate)
+        function placeBet() {
+            if (betSlip.length === 0) {
+                showNotification('Please add stakes to your bet slip first');
+                return;
+            }
+            
+            // Show success message
+            showNotification(`Bet placed successfully! Potential win: KES ${(100 * totalOdds).toFixed(2)}`, true);
+            
+            // Clear bet slip
+            betSlip = [];
+            updateBetSlipUI();
+            
+            // Close bet slip after 3 seconds
+            setTimeout(() => {
+                betSlipElement.classList.remove('active');
+            }, 3000);
+        }
+
+        // Show notification
+        function showNotification(message, isSuccess = true) {
+            notificationText.textContent = message;
+            notification.style.backgroundColor = isSuccess ? 'var(--primary)' : 'var(--accent)';
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <style>
+             * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e7e34;
+            --primary-dark: #0d5c23;
+            --secondary: #ffcc00;
+            --accent: #e63946;
+            --dark: #121212;
+            --gray: #2d2d2d;
+            --light-gray: #f5f5f5;
+            --text: #ffffff;
+            --text-secondary: #cccccc;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e6b800;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: rgba(18, 18, 18, 0.95);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            background: linear-gradient(to right, var(--secondary), #ff9900);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            color: var(--secondary);
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            font-size: 1.05rem;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary);
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        /* Hero Section with Animation */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1577223625816-1801dc0c4d42?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            color: var(--text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 700px;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--secondary), #ff9900);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .animated-ball {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, var(--secondary), #ff9900);
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: float 20s infinite linear;
+            z-index: 1;
+        }
+
+        .ball-1 {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .ball-2 {
+            top: 60%;
+            right: 15%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 5s;
+            animation-duration: 25s;
+        }
+
+        .ball-3 {
+            bottom: 20%;
+            left: 20%;
+            width: 40px;
+            height: 40px;
+            animation-delay: 10s;
+            animation-duration: 15s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-100px) translateX(100px) rotate(90deg);
+            }
+            50% {
+                transform: translateY(0) translateX(200px) rotate(180deg);
+            }
+            75% {
+                transform: translateY(100px) translateX(100px) rotate(270deg);
+            }
+            100% {
+                transform: translateY(0) translateX(0) rotate(360deg);
+            }
+        }
+
+        /* Featured Matches Section */
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            display: inline-block;
+            color: var(--text);
+            position: relative;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+        }
+
+        .section {
+            padding: 100px 0;
+        }
+
+        .matches-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .match-card {
+            background-color: var(--gray);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .match-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .match-header {
+            background-color: var(--primary);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-league {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .match-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 40%;
+        }
+
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            background-color: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+
+        .team-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .vs {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .match-stakes {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stake-option {
+            background-color: var(--dark);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .stake-option:hover {
+            background-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .stake-odds {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .stake-type {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Bet Slip Section */
+        .bet-slip {
+            position: fixed;
+            bottom: 0;
+            right: 20px;
+            width: 350px;
+            background-color: var(--gray);
+            border-radius: 15px 15px 0 0;
+            box-shadow: var(--shadow);
+            z-index: 999;
+            transform: translateY(calc(100% - 60px));
+            transition: var(--transition);
+        }
+
+        .bet-slip.active {
+            transform: translateY(0);
+        }
+
+        .bet-slip-header {
+            background-color: var(--primary);
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .bet-slip-header h3 {
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bet-count {
+            background-color: var(--accent);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .bet-slip-content {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .bet-item {
+            background-color: var(--dark);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bet-match {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .bet-selection {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .remove-bet {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .bet-total {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .place-bet-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--secondary);
+            color: var(--dark);
+            border: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .place-bet-btn:hover {
+            background-color: #e6b800;
+        }
+
+        /* Kenyan Leagues Section */
+        .kenyan-leagues {
+            background-color: var(--gray);
+        }
+
+        .league-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .league-tab {
+            background-color: var(--dark);
+            color: var(--text);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .league-tab.active {
+            background-color: var(--secondary);
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .league-tab:hover:not(.active) {
+            background-color: var(--primary);
+        }
+
+        .league-content {
+            display: none;
+        }
+
+        .league-content.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .matches-container {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            nav ul {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: var(--dark);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: var(--transition);
+                z-index: 999;
+            }
+
+            nav ul.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            nav ul li {
+                margin: 15px 0;
+            }
+
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .bet-slip {
+                width: 100%;
+                right: 0;
+                border-radius: 15px 15px 0 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .matches-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0a0a0a;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo h2 {
+            color: var(--secondary);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .footer-links h3, .footer-contact h3 {
+            color: var(--text);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .footer-contact p {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--gray);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Stake Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .stake-added {
+            animation: pulse 0.5s ease;
+        }
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CharlesStakes Kenya | Football Betting Predictions & Tips</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="style.css" href="css/style.css">
+    <link rel="javaScript" href="javaScript/main.js">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-futbol logo-icon"></i>
+                <h1>CharlesStakes Kenya</h1>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul id="mainNav">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#matches">Today's Matches</a></li>
+                    <li><a href="#kenyan">Kenyan Leagues</a></li>
+                    <li><a href="#premium">Premium Tips</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <h1>WIN BIG WITH EXPERT FOOTBALL STAKES IN KENYA</h1>
+            <p>Get daily winning predictions for Premier League, UEFA Champions League, Kenyan Premier League, and international matches. Join thousands of successful bettors across Kenya.</p>
+            <div class="hero-btns">
+                <a href="#matches" class="btn">View Today's Stakes</a>
+                <a href="#premium" class="btn btn-secondary">Premium VIP Tips</a>
+            </div>
+        </div>
+        
+        <!-- Animated Footballs -->
+        <div class="animated-ball ball-1"></div>
+        <div class="animated-ball ball-2"></div>
+        <div class="animated-ball ball-3"></div>
+    </section>
+
+    <!-- Featured Matches Section -->
+    <section class="section" id="matches">
+        <div class="container">
+            <div class="section-title">
+                <h2>Today's Top Match Stakes</h2>
+                <p>Expertly analyzed predictions with high winning probability</p>
+            </div>
+            
+            <div class="matches-container" id="matchesContainer">
+                <!-- Match cards will be generated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Kenyan Leagues Section -->
+    <section class="section kenyan-leagues" id="kenyan">
+        <div class="container">
+            <div class="section-title">
+                <h2>Kenyan Football League Predictions</h2>
+                <p>Get stakes for local matches across Kenya</p>
+            </div>
+            
+            <div class="league-tabs">
+                <button class="league-tab active" data-league="fpl">FPL Kenya</button>
+                <button class="league-tab" data-league="nsl">National Super League</button>
+                <button class="league-tab" data-league="division1">Division One</button>
+            </div>
+            
+            <div class="league-content active" id="fpl">
+                <div class="matches-container">
+                    <!-- Kenyan FPL matches will be generated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="league-content" id="nsl">
+                <div class="matches-container">
+                    <!-- NSL matches will be generated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="league-content" id="division1">
+                <div class="matches-container">
+                    <!-- Division One matches will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bet Slip -->
+    <div class="bet-slip" id="betSlip">
+        <div class="bet-slip-header" id="betSlipHeader">
+            <h3><i class="fas fa-receipt"></i> My Bet Slip <span class="bet-count" id="betCount">0</span></h3>
+            <i class="fas fa-chevron-up" id="betSlipToggle"></i>
+        </div>
+        
+        <div class="bet-slip-content" id="betSlipContent">
+            <!-- Bet items will be added here by JavaScript -->
+            <p id="emptyBetSlip" style="text-align: center; color: #999; padding: 20px;">Your bet slip is empty. Add stakes from matches above.</p>
+        </div>
+        
+        <div class="bet-total">
+            <span>Total Odds:</span>
+            <span id="totalOdds">1.00</span>
+        </div>
+        
+        <button class="place-bet-btn" id="placeBetBtn">Place Bet</button>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Stake added to bet slip!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>BetStakes Kenya</h2>
+                    <p>Your trusted partner for winning football predictions in Kenya since 2018.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#matches">Today's Matches</a></li>
+                        <li><a href="#kenyan">Kenyan Leagues</a></li>
+                        <li><a href="#premium">Premium Tips</a></li>
+                        <li><a href="#about">About Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-phone"></i> +254 708155063</p>
+                    <p><i class="fas fa-envelope"></i>oumac574@gmail.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Mombasa, Kenya</p>
+                    <p><i class="fas fa-exclamation-triangle"></i> Bet responsibly. 18+ only.</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p><small>&copy; 2025 BetStakes Kenya. All rights reserved. This site is for informational purposes only.</small></p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
