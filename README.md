@@ -65,8 +65,9 @@ StakersHub is a high-performance, immersive sports betting platform designed to 
    # In the server directory
    npm start
    
-   # In the client directory (open in browser)
-   open index.html
+   # In the client directory
+   npm install
+   npm run dev
    ```
 
 ## 🎮 How to Use
