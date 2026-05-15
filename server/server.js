@@ -7,6 +7,7 @@ const { connectdb } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const matchRoutes = require('./routes/matches');
 const betRoutes = require('./routes/bets');
+const walletRoutes = require('./routes/wallet');
 
 const app = express();
 const port = process.env.PORT || 6000;
@@ -20,6 +21,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/bets', betRoutes);
+app.use('/api/wallet', walletRoutes);
 
 // Health check
 app.get('/', (req, res) => {

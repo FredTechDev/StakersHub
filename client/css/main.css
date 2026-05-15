@@ -292,7 +292,7 @@ body {
     color: var(--text-muted);
 }
 
-.form-group input {
+.form-group input, .form-group select {
     width: 100%;
     background: var(--glass);
     border: 1px solid var(--glass-border);
@@ -300,6 +300,17 @@ body {
     border-radius: 10px;
     color: #fff;
     font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.locked-arena-btn {
+    margin-top: 20px;
 }
 
 /* Bet Slip Sidebar */
