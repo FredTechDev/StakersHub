@@ -1,27 +1,31 @@
-const { Decimal128 } = require('bson')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const userSchema =  new mongoose.Schema({
-    username : {
-        type : String,
-        required: true,
-    },
-
-    email : {
+const userSchema = new mongoose.Schema({
+    username: {
         type: String,
-        require:true,
-        unique : true
+        required: true,
+        trim: true
     },
-
-    password : {
-        type : String,
-        required : true
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true
     },
-
+    password: {
+        type: String,
+        required: true
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
     balance: {
-        type : Decimal128,
-        default: 0
+        type: Number,
+        default: 1000.00 // Default sign-up bonus
     }
-},{timestamps:true})
+}, { timestamps: true });
 
-module.exports = mongoose.model('user',userSchema)
+module.exports = mongoose.model('User', userSchema);
