@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
+import { API_URL } from '../config';
 
 const BetSlipContext = createContext();
 
@@ -33,7 +34,7 @@ export const BetSlipProvider = ({ children }) => {
 
     const placeBet = async (stake) => {
         try {
-            const res = await axios.post('http://localhost:6000/api/bets', {
+            const res = await axios.post(`${API_URL}/bets`, {
                 items: betSlip.map(i => ({ matchId: i.matchId, selection: i.selection })),
                 totalStake: stake
             }, {

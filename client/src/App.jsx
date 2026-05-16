@@ -11,6 +11,7 @@ import MatchModal from './components/MatchModal';
 import UserHistory from './components/UserHistory';
 import AdminDashboard from './components/AdminDashboard';
 import Notification from './components/Notification';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const App = () => {
     const [view, setView] = useState('arena'); // 'arena', 'history', 'admin'
@@ -26,16 +27,26 @@ const App = () => {
     };
 
     const renderView = () => {
-        switch (view) {
-            case 'history': return <UserHistory setView={setView} />;
-            case 'admin': return <AdminDashboard setView={setView} showNotification={showNotification} openMatchModal={() => setIsMatchModalOpen(true)} />;
-            default: return (
-                <>
-                    <Hero onAction={() => setAuthModal('register')} />
-                    <MatchGrid onAuthRequired={() => setAuthModal('login')} />
-                </>
-            );
-        }
+        return (
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={view}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                >
+                    {view === 'history' && <UserHistory setView={setView} />}
+                    {view === 'admin' && <AdminDashboard setView={setView} showNotification={showNotification} openMatchModal={() => setIsMatchModalOpen(true)} />}
+                    {view === 'arena' && (
+                        <>
+                            <Hero onAction={() => setAuthModal('register')} />
+                            <MatchGrid onAuthRequired={() => setAuthModal('login')} />
+                        </>
+                    )}
+                </motion.div>
+            </AnimatePresence>
+        );
     };
 
     return (

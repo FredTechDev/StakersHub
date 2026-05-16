@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useBetSlip } from '../context/BetSlipContext';
-import { Lock, Radio } from 'lucide-react';
+import { Lock, Radio, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config';
 
 const MatchGrid = ({ onAuthRequired }) => {
     const [matches, setMatches] = useState([]);
@@ -20,7 +22,7 @@ const MatchGrid = ({ onAuthRequired }) => {
 
     const fetchMatches = async () => {
         try {
-            const res = await axios.get('http://localhost:6000/api/matches');
+            const res = await axios.get(`${API_URL}/matches`);
             setMatches(res.data.filter(m => m.status !== 'finished'));
         } catch (err) {
             console.error('Error fetching matches:', err);
@@ -64,18 +66,32 @@ const MatchGrid = ({ onAuthRequired }) => {
                 <h2><Radio size={20} style={{ color: 'var(--primary)', marginRight: '10px' }} /> Market Overview</h2>
             </div>
             <div className="match-grid">
-                {matches.length === 0 ? (
-                    <p style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--text-muted)' }}>No active markets at the moment. Check back soon!</p>
-                ) : (
-                    matches.map(match => (
-                        <MatchCard 
-                            key={match._id} 
-                            match={match} 
-                            onSelect={(sel, odds) => addToBetSlip(match._id, sel, odds, `${match.team1.name} vs ${match.team2.name}`)}
-                            selected={betSlip.find(i => i.matchId === match._id)}
-                        />
-                    ))
-                )}
+                <AnimatePresence>
+                    {matches.length === 0 ? (
+                        <motion.p 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--text-muted)' }}
+                        >
+                            No active markets at the moment. Check back soon!
+                        </motion.p>
+                    ) : (
+                        matches.map((match, index) => (
+                            <motion.div
+                                key={match._id}
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                            >
+                                <MatchCard 
+                                    match={match} 
+                                    onSelect={(sel, odds) => addToBetSlip(match._id, sel, odds, `${match.team1.name} vs ${match.team2.name}`)}
+                                    selected={betSlip.find(i => i.matchId === match._id)}
+                                />
+                            </motion.div>
+                        ))
+                    )}
+                </AnimatePresence>
             </div>
         </section>
     );
@@ -91,8 +107,9 @@ const MatchCard = ({ match, onSelect, selected }) => {
                 <div className="match-league">
                     <i className={`fas ${match.leagueIcon || 'fa-futbol'}`}></i> {match.league}
                 </div>
-                <div className={isLive ? 'status-live' : ''}>
-                    {isLive ? '● LIVE' : matchDate.toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' })}
+                <div className={isLive ? 'status-live' : ''} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    {isLive && <Zap size={14} fill="var(--primary)" />}
+                    {isLive ? 'LIVE NOW' : matchDate.toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' })}
                 </div>
             </div>
             <div className="match-teams">

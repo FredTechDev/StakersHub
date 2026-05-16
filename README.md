@@ -25,10 +25,22 @@ StakersHub is a high-performance, immersive sports betting platform designed to 
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3 (Custom Design System).
+- **Frontend**: React 19 (Vite), Framer Motion (Animations), Lucide React (Icons), Axios.
 - **Backend**: Node.js, Express.js.
-- **Database**: MongoDB with Mongoose ODM.
-- **Auth**: JSON Web Tokens (JWT) & Bcrypt.
+- **Database**: MongoDB with Mongoose ODM (Atomic Transactions).
+- **Auth**: JWT & Bcrypt (Role-Based Access Control).
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    User((User)) -->|HTTPS| ReactApp[React Frontend - Vite]
+    Admin((Admin)) -->|HTTPS| ReactApp
+    ReactApp -->|REST API| ExpressServer[Node.js Express Server]
+    ExpressServer -->|Auth Middleware| JWT[JWT Validation]
+    ExpressServer -->|Mongoose| MongoDB[(MongoDB Atlas)]
+    ExpressServer -->|Heuristic Engine| AI[AI Win Assistant]
+```
 
 ## 🚀 Getting Started
 
@@ -94,13 +106,15 @@ The StakersHub AI engine analyzes historical team form, league standings, and ho
 
 ```text
 StakersHub/
-├── client/              # Frontend Application
-│   ├── css/            # Custom Design System
-│   ├── js/             # Application Logic (app.js)
-│   └── index.html      # Main Arena
-├── server/              # Backend API
-│   ├── config/         # Database Configuration
-│   ├── middleware/     # Auth & Admin Protection
+├── client/              # React Frontend
+│   ├── src/
+│   │   ├── components/ # React Components
+│   │   ├── context/    # Global State (Auth, BetSlip)
+│   │   ├── App.jsx     # Main Router & Layout
+│   │   └── index.css   # Premium Design System
+│   └── index.html      
+├── server/              # Node.js Backend
+│   ├── config/         # DB & Environment
 │   ├── models/         # Mongoose Schemas
 │   ├── routes/         # API Endpoints
 │   └── server.js       # Entry Point

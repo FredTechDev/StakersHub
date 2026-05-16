@@ -3,6 +3,7 @@ import Modal from './Modal';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Sparkles, Brain, Target } from 'lucide-react';
+import { API_URL } from '../config';
 
 const MatchModal = ({ close, showNotification }) => {
     const { token } = useAuth();
@@ -29,7 +30,7 @@ const MatchModal = ({ close, showNotification }) => {
         
         setAiLoading(true);
         try {
-            const res = await axios.post('http://localhost:6000/api/ai/analyze', 
+            const res = await axios.post(`${API_URL}/ai/analyze`, 
                 { team1: formData.team1, team2: formData.team2, league: formData.league },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -65,7 +66,7 @@ const MatchModal = ({ close, showNotification }) => {
 
         setLoading(true);
         try {
-            await axios.post('http://localhost:6000/api/matches', data, {
+            await axios.post(`${API_URL}/matches`, data, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             showNotification('New market launched! 🚀');

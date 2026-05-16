@@ -1,6 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
+import { API_URL } from '../config';
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -11,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:6000/api/auth/login', { email, password });
+            const res = await axios.post(`${API_URL}/auth/login`, { email, password });
             const { user, token } = res.data;
             saveAuth(user, token);
             return { success: true };
@@ -26,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     const register = async (username, email, password) => {
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:6000/api/auth/register', { username, email, password });
+            const res = await axios.post(`${API_URL}/auth/register`, { username, email, password });
             const { user, token } = res.data;
             saveAuth(user, token);
             return { success: true };
@@ -61,7 +63,7 @@ export const AuthProvider = ({ children }) => {
 
     const deposit = async (amount) => {
         try {
-            const res = await axios.post('http://localhost:6000/api/wallet/deposit', 
+            const res = await axios.post(`${API_URL}/wallet/deposit`, 
                 { amount }, 
                 { headers: { Authorization: `Bearer ${token}` } }
             );

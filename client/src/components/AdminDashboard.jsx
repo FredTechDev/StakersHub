@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Shield, ChevronLeft, Plus } from 'lucide-react';
+import { Shield, ChevronLeft, Plus, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config';
 
 const AdminDashboard = ({ setView, showNotification, openMatchModal }) => {
     const { token } = useAuth();
@@ -14,7 +16,7 @@ const AdminDashboard = ({ setView, showNotification, openMatchModal }) => {
 
     const fetchMatches = async () => {
         try {
-            const res = await axios.get('http://localhost:6000/api/matches');
+            const res = await axios.get(`${API_URL}/matches`);
             setMatches(res.data);
         } catch (err) {
             console.error(err);
@@ -26,7 +28,7 @@ const AdminDashboard = ({ setView, showNotification, openMatchModal }) => {
     const settleMatch = async (id, result) => {
         if (!confirm(`Settle match with result ${result}? Winners will be paid.`)) return;
         try {
-            await axios.put(`http://localhost:6000/api/matches/${id}/settle`, 
+            await axios.put(`${API_URL}/matches/${id}/settle`, 
                 { result }, 
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -47,33 +49,53 @@ const AdminDashboard = ({ setView, showNotification, openMatchModal }) => {
                 </div>
             </div>
             <div className="match-grid">
-                {loading ? (
-                    <p>Loading active markets...</p>
-                ) : matches.map(match => (
-                    <div key={match._id} className="glass">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-                            <span style={{ fontWeight: 700 }}>{match.league}</span>
-                            <span style={{ color: 'var(--primary)', fontWeight: 800 }}>{match.status.toUpperCase()}</span>
-                        </div>
-                        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                            {match.team1.name} vs {match.team2.name}
-                        </div>
-                        {match.status !== 'finished' ? (
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => settleMatch(match._id, '1')}>1</button>
-                                <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => settleMatch(match._id, 'X')}>X</button>
-                                <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => settleMatch(match._id, '2')}>2</button>
+                <AnimatePresence>
+                    {matches.map((match, index) => (
+                        <motion.div 
+                            key={match._id} 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.05 }}
+                            className="glass"
+                            style={{ borderTop: match.status === 'finished' ? 'none' : '2px solid var(--primary)' }}
+                        >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
+                                <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-muted)' }}>{match.league}</span>
+                                <span style={{ color: match.status === 'finished' ? 'var(--text-muted)' : 'var(--primary)', fontWeight: 800, fontSize: '0.75rem' }}>
+                                    {match.status.toUpperCase()}
+                                </span>
                             </div>
-                        ) : (
-                            <div style={{ textAlign: 'center', color: 'var(--primary)', fontWeight: 800 }}>
-                                RESULT: {match.result}
+                            <div style={{ textAlign: 'center', marginBottom: '20px', fontWeight: 800, fontSize: '1.1rem' }}>
+                                {match.team1.name} <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>VS</span> {match.team2.name}
                             </div>
-                        )}
-                        <p style={{ textAlign: 'center', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '10px' }}>
-                            {match.status !== 'finished' ? 'Click result to settle market' : 'Market closed'}
-                        </p>
-                    </div>
-                ))}
+                            {match.status !== 'finished' ? (
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => settleMatch(match._id, '1')}>1</button>
+                                    <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => settleMatch(match._id, 'X')}>X</button>
+                                    <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => settleMatch(match._id, '2')}>2</button>
+                                </div>
+                            ) : (
+                                <div style={{ 
+                                    textAlign: 'center', 
+                                    background: 'rgba(0,255,136,0.1)', 
+                                    padding: '10px', 
+                                    borderRadius: '12px', 
+                                    color: 'var(--primary)', 
+                                    fontWeight: 900,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '8px'
+                                }}>
+                                    <CheckCircle2 size={16} /> SETTLED RESULT: {match.result}
+                                </div>
+                            )}
+                            <p style={{ textAlign: 'center', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '10px' }}>
+                                {match.status !== 'finished' ? 'Select result to trigger global payouts' : 'Payouts complete'}
+                            </p>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
             </div>
         </section>
     );

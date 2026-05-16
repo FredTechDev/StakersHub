@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { PlusCircle, LogOut, Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Header = ({ setView, openLogin, openRegister, openDeposit }) => {
     const { user, logout } = useAuth();
@@ -31,9 +32,16 @@ const Header = ({ setView, openLogin, openRegister, openDeposit }) => {
                         <div className="user-profile" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                             <div className="user-info" style={{ textAlign: 'right' }}>
                                 <div className="username" style={{ fontWeight: 700 }}>{user.username}</div>
-                                <div className="balance" onClick={openDeposit} style={{ color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <motion.div 
+                                    className="balance" 
+                                    onClick={openDeposit} 
+                                    key={user.balance}
+                                    initial={{ scale: 1.1, color: '#fff' }}
+                                    animate={{ scale: 1, color: 'var(--primary)' }}
+                                    style={{ fontSize: '0.85rem', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
+                                >
                                     KES {user.balance.toFixed(2)} <PlusCircle size={14} />
-                                </div>
+                                </motion.div>
                             </div>
                             <button className="btn btn-outline" style={{ padding: '8px 12px' }} onClick={logout}>
                                 <LogOut size={18} />

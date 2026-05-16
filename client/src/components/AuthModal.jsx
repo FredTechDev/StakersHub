@@ -10,6 +10,7 @@ const AuthModal = ({ type, close, showNotification }) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData);
+        console.log('Auth Form Data:', data);
 
         let res;
         if (isLogin) {
