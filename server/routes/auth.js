@@ -6,6 +6,7 @@ const User = require('../models/users');
 
 // Register
 router.post('/register', async (req, res) => {
+    console.log('Registration request received:', req.body);
     try {
         const { username, email, password } = req.body;
         
@@ -32,6 +33,7 @@ router.post('/register', async (req, res) => {
 
 // Login
 router.post('/login', async (req, res) => {
+    console.log('Login request received:', req.body);
     try {
         const { email, password } = req.body;
         

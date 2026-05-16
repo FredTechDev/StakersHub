@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
             saveAuth(user, token);
             return { success: true };
         } catch (err) {
+            console.error('Login Error:', err.response || err);
             return { success: false, message: err.response?.data?.message || 'Login failed' };
         } finally {
             setLoading(false);
@@ -30,6 +31,7 @@ export const AuthProvider = ({ children }) => {
             saveAuth(user, token);
             return { success: true };
         } catch (err) {
+            console.error('Registration Error:', err.response || err);
             return { success: false, message: err.response?.data?.message || 'Registration failed' };
         } finally {
             setLoading(false);

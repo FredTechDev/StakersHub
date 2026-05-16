@@ -23,7 +23,9 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-main);
     overflow-x: hidden;
-    background-image: radial-gradient(circle at 50% -20%, #1a2a22 0%, var(--bg-dark) 60%);
+    background-image: 
+        radial-gradient(circle at 50% -20%, #1a2a22 0%, var(--bg-dark) 80%),
+        url('https://www.transparenttextures.com/patterns/pinstripe-dark.png');
     min-height: 100vh;
 }
 
@@ -76,17 +78,23 @@ body {
 
 /* Hero Section */
 .hero {
-    padding: 80px 40px;
+    padding: 100px 40px;
     text-align: center;
     position: relative;
+    background-image: linear-gradient(rgba(10, 14, 18, 0.7), rgba(10, 14, 18, 0.7)), url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000');
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 0 50px 50px;
+    margin-bottom: 40px;
 }
 
 .hero h1 {
-    font-size: 4rem;
-    font-weight: 900;
-    line-height: 1.1;
+    font-size: 5rem;
+    font-weight: 950;
+    line-height: 1;
     margin-bottom: 20px;
-    letter-spacing: -2px;
+    letter-spacing: -3px;
+    text-transform: uppercase;
 }
 
 .hero p {
@@ -166,11 +174,30 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.match-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary);
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.match-card:hover::before {
+    opacity: 1;
 }
 
 .match-card:hover {
     border-color: var(--primary);
-    transform: translateY(-5px);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 255, 136, 0.15);
 }
 
 .match-top {
