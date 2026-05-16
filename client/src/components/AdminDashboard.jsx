@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Shield, ChevronLeft, Plus, CheckCircle2 } from 'lucide-react';
+import { Shield, ChevronLeft, Plus, CheckCircle2, RefreshCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { API_URL } from '../config';
 
@@ -39,11 +39,29 @@ const AdminDashboard = ({ setView, showNotification, openMatchModal }) => {
         }
     };
 
+    const syncRealData = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.post(`${API_URL}/matches/sync`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            showNotification(res.data.message);
+            fetchMatches();
+        } catch (err) {
+            showNotification(err.response?.data?.message || 'Sync failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <section className="match-section">
             <div className="section-header">
                 <h2><Shield size={20} style={{ marginRight: '10px' }} /> Admin Dashboard</h2>
                 <div style={{ display: 'flex', gap: '10px' }}>
+                    <button className="btn btn-outline" style={{ color: 'var(--secondary)' }} onClick={syncRealData}>
+                        <RefreshCcw size={16} /> Sync Real Data
+                    </button>
                     <button className="btn btn-outline" onClick={openMatchModal}><Plus size={16} /> Upload Odds</button>
                     <button className="btn btn-primary" onClick={() => setView('arena')}>Arena View</button>
                 </div>

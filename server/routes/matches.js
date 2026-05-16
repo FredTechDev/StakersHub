@@ -6,6 +6,7 @@ const BetItem = require('../models/betitems');
 const User = require('../models/users');
 const Transaction = require('../models/transactions');
 const { auth, adminOnly } = require('../middleware/auth');
+const { syncMatches } = require('../services/matchSync');
 
 // Get all matches
 router.get('/', async (req, res) => {
@@ -90,6 +91,16 @@ router.put('/:id/settle', auth, adminOnly, async (req, res) => {
         }
 
         res.json({ message: "Match settled and bets processed", match });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Sync real-world matches (Admin only)
+router.post('/sync', auth, adminOnly, async (req, res) => {
+    try {
+        const result = await syncMatches();
+        res.json({ message: "Markets synced with real-world data", count: result.count });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

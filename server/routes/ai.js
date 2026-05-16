@@ -5,11 +5,16 @@ const { auth, adminOnly } = require('../middleware/auth');
 // Mock Data for "Analysis"
 const teamStats = {
     'Real Madrid': { form: 0.9, strength: 95, homeAdvantage: 1.1 },
-    'Manchester City': { form: 0.85, strength: 96, homeAdvantage: 1.05 },
+    'Manchester City': { form: 0.92, strength: 96, homeAdvantage: 1.05 },
     'Arsenal': { form: 0.8, strength: 90, homeAdvantage: 1.1 },
     'Liverpool': { form: 0.75, strength: 91, homeAdvantage: 1.1 },
-    'Barcelona': { form: 0.7, strength: 88, homeAdvantage: 1.2 },
-    'Bayern Munich': { form: 0.82, strength: 92, homeAdvantage: 1.15 }
+    'Chelsea': { form: 0.72, strength: 88, homeAdvantage: 1.1 },
+    'Bayern Munich': { form: 0.85, strength: 93, homeAdvantage: 1.15 },
+    'Gor Mahia': { form: 0.88, strength: 82, homeAdvantage: 1.2 },
+    'Murang\'a Seal': { form: 0.65, strength: 72, homeAdvantage: 1.1 },
+    'Celtic': { form: 0.9, strength: 85, homeAdvantage: 1.2 },
+    'Hearts': { form: 0.7, strength: 78, homeAdvantage: 1.1 },
+    'Köln': { form: 0.5, strength: 75, homeAdvantage: 1.1 }
 };
 
 // AI Match Analysis Endpoint

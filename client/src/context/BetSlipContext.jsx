@@ -9,18 +9,18 @@ export const BetSlipProvider = ({ children }) => {
     const [betSlip, setBetSlip] = useState([]);
     const { user, token, updateBalance } = useAuth();
 
-    const addToBetSlip = (matchId, selection, odds, teams) => {
+    const addToBetSlip = (matchId, selection, odds, teams, logo) => {
         const existingIndex = betSlip.findIndex(b => b.matchId === matchId);
         if (existingIndex > -1) {
             if (betSlip[existingIndex].selection === selection) {
                 setBetSlip(betSlip.filter((_, i) => i !== existingIndex));
             } else {
                 const newSlip = [...betSlip];
-                newSlip[existingIndex] = { matchId, selection, odds, teams };
+                newSlip[existingIndex] = { matchId, selection, odds, teams, logo };
                 setBetSlip(newSlip);
             }
         } else {
-            setBetSlip([...betSlip, { matchId, selection, odds, teams }]);
+            setBetSlip([...betSlip, { matchId, selection, odds, teams, logo }]);
         }
     };
 

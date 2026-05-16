@@ -4,31 +4,76 @@ require('dotenv').config();
 
 const matches = [
     {
-        league: "Premier League",
+        league: "FA Cup Final",
         leagueIcon: "fa-trophy",
-        team1: { name: "Manchester City", icon: "fa-shield-halved" },
-        team2: { name: "Arsenal", icon: "fa-gun" },
-        date: new Date(),
-        status: "live",
-        odds: { team1: 1.85, draw: 3.60, team2: 4.20 }
-    },
-    {
-        league: "UEFA Champions League",
-        leagueIcon: "fa-star",
-        team1: { name: "Real Madrid", icon: "fa-crown" },
-        team2: { name: "Bayern Munich", icon: "fa-beer-mug-empty" },
-        date: new Date(Date.now() + 3600000 * 2), // 2 hours from now
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/be/The_FA_Cup_logo.svg/1200px-The_FA_Cup_logo.svg.png",
+        team1: { 
+            name: "Chelsea", 
+            icon: "fa-shield-halved",
+            logo: "https://upload.wikimedia.org/wikipedia/en/thumb/c/cc/Chelsea_FC.svg/1200px-Chelsea_FC.svg.png"
+        },
+        team2: { 
+            name: "Manchester City", 
+            icon: "fa-gun",
+            logo: "https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/1200px-Manchester_City_FC_badge.svg.png"
+        },
+        date: new Date(Date.now() + 3600000 * 4),
         status: "scheduled",
-        odds: { team1: 2.10, draw: 3.40, team2: 3.30 }
+        odds: { team1: 3.40, draw: 3.60, team2: 1.95 }
     },
     {
         league: "Kenyan Premier League",
         leagueIcon: "fa-flag",
-        team1: { name: "Gor Mahia", icon: "fa-lion" },
-        team2: { name: "AFC Leopards", icon: "fa-paw" },
-        date: new Date(Date.now() + 3600000 * 5), // 5 hours from now
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/b/b5/FKF_PL_Logo.png",
+        team1: { 
+            name: "Murang'a Seal", 
+            icon: "fa-shield",
+            logo: "https://pbs.twimg.com/profile_images/1691166675200212992/N6Z0_9V1_400x400.jpg" 
+        },
+        team2: { 
+            name: "Gor Mahia", 
+            icon: "fa-lion",
+            logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/08/Gor_Mahia_FC_logo.svg/1200px-Gor_Mahia_FC_logo.svg.png"
+        },
+        date: new Date(),
+        status: "live",
+        odds: { team1: 4.50, draw: 3.20, team2: 1.85 }
+    },
+    {
+        league: "German Bundesliga",
+        leagueIcon: "fa-crown",
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Bundesliga_logo_%282017%29.svg/1200px-Bundesliga_logo_%282017%29.svg.png",
+        team1: { 
+            name: "Bayern Munich", 
+            icon: "fa-shield-halved",
+            logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/1200px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png"
+        },
+        team2: { 
+            name: "Köln", 
+            icon: "fa-goat",
+            logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/53/FC_Koln_logo.svg/1200px-FC_Koln_logo.svg.png"
+        },
+        date: new Date(Date.now() + 3600000 * 2),
         status: "scheduled",
-        odds: { team1: 1.95, draw: 3.10, team2: 4.00 }
+        odds: { team1: 1.25, draw: 6.00, team2: 12.00 }
+    },
+    {
+        league: "Scottish Premiership",
+        leagueIcon: "fa-star",
+        leagueLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/67/Scottish_Premiership_logo.svg/1200px-Scottish_Premiership_logo.svg.png",
+        team1: { 
+            name: "Celtic", 
+            icon: "fa-clover",
+            logo: "https://upload.wikimedia.org/wikipedia/en/thumb/3/3e/Celtic_FC_crest.svg/1200px-Celtic_FC_crest.svg.png"
+        },
+        team2: { 
+            name: "Hearts", 
+            icon: "fa-heart",
+            logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/Heart_of_Midlothian_FC_crest.svg/1200px-Heart_of_Midlothian_FC_crest.svg.png"
+        },
+        date: new Date(Date.now() + 3600000 * 1),
+        status: "scheduled",
+        odds: { team1: 1.40, draw: 4.50, team2: 7.50 }
     }
 ];
 

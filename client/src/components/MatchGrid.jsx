@@ -85,7 +85,10 @@ const MatchGrid = ({ onAuthRequired }) => {
                             >
                                 <MatchCard 
                                     match={match} 
-                                    onSelect={(sel, odds) => addToBetSlip(match._id, sel, odds, `${match.team1.name} vs ${match.team2.name}`)}
+                                    onSelect={(sel, odds) => {
+                                        const logo = sel === '1' ? match.team1.logo : (sel === '2' ? match.team2.logo : null);
+                                        addToBetSlip(match._id, sel, odds, `${match.team1.name} vs ${match.team2.name}`, logo);
+                                    }}
                                     selected={betSlip.find(i => i.matchId === match._id)}
                                 />
                             </motion.div>
@@ -104,8 +107,13 @@ const MatchCard = ({ match, onSelect, selected }) => {
     return (
         <div className="match-card glass">
             <div className="match-top">
-                <div className="match-league">
-                    <i className={`fas ${match.leagueIcon || 'fa-futbol'}`}></i> {match.league}
+                <div className="match-league" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {match.leagueLogo ? (
+                        <img src={match.leagueLogo} alt={match.league} style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+                    ) : (
+                        <i className={`fas ${match.leagueIcon || 'fa-futbol'}`}></i>
+                    )}
+                    {match.league}
                 </div>
                 <div className={isLive ? 'status-live' : ''} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                     {isLive && <Zap size={14} fill="var(--primary)" />}
@@ -114,12 +122,24 @@ const MatchCard = ({ match, onSelect, selected }) => {
             </div>
             <div className="match-teams">
                 <div className="team">
-                    <div className="team-logo"><i className={`fas ${match.team1.icon || 'fa-shield'}`}></i></div>
+                    <div className="team-logo">
+                        {match.team1.logo ? (
+                            <img src={match.team1.logo} alt={match.team1.name} style={{ width: '45px', height: '45px', objectFit: 'contain' }} />
+                        ) : (
+                            <i className={`fas ${match.team1.icon || 'fa-shield'}`}></i>
+                        )}
+                    </div>
                     <div className="team-name">{match.team1.name}</div>
                 </div>
                 <div className="vs-badge">VS</div>
                 <div className="team">
-                    <div className="team-logo"><i className={`fas ${match.team2.icon || 'fa-shield'}`}></i></div>
+                    <div className="team-logo">
+                        {match.team2.logo ? (
+                            <img src={match.team2.logo} alt={match.team2.name} style={{ width: '45px', height: '45px', objectFit: 'contain' }} />
+                        ) : (
+                            <i className={`fas ${match.team2.icon || 'fa-shield'}`}></i>
+                        )}
+                    </div>
                     <div className="team-name">{match.team2.name}</div>
                 </div>
             </div>
