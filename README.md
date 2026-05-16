@@ -10,8 +10,9 @@ StakersHub is a high-performance, immersive sports betting platform designed to 
 
 ### 🏟️ Immersive Arena (Frontend)
 - **Stadium Theme**: A dark, high-contrast UI with emerald accents and glassmorphic effects for a premium feel.
-- **Dynamic Bet Slip**: Build multi-bets in real-time with automated odds calculation and potential payout estimation.
-- **Real-Time Market**: Live updates for match statuses and odds.
+-   **AI Win Assistant**: Admin-only AI tool for match analysis and odds recommendation.
+-   **Multi-Bet Slip**: Build complex accumulators with real-time payout calculation.
+-   **Instant Settlements**: Automated winning payouts upon match conclusion.
 
 ### 💰 Robust Betting Engine (Backend)
 - **Atomic Transactions**: Secure placement of bets with automatic balance validation and deduction using MongoDB transactions.
@@ -69,6 +70,12 @@ StakersHub is a high-performance, immersive sports betting platform designed to 
    npm install
    npm run dev
    ```
+
+## 🤖 AI Win Assistant (Admin Only)
+The StakersHub AI engine analyzes historical team form, league standings, and home/away advantages to suggest mathematically sound odds. 
+- **Probability Mapping**: Get percentage-based win/draw/loss forecasts.
+- **Auto-Odds**: Suggested odds are automatically calculated with a 10% market margin.
+- **Form Analysis**: Textual summary of team performance metrics.
 
 ## 🎮 How to Use
 

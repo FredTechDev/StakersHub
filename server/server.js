@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth');
 const matchRoutes = require('./routes/matches');
 const betRoutes = require('./routes/bets');
 const walletRoutes = require('./routes/wallet');
+const aiRoutes = require('./routes/ai');
 
 const app = express();
 const port = process.env.PORT || 6000;
@@ -22,6 +23,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/bets', betRoutes);
 app.use('/api/wallet', walletRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Health check
 app.get('/', (req, res) => {
